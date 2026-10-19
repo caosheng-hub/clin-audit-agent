@@ -2,7 +2,6 @@
 
 **把临床试验方案条款编译为可执行 SQL 核查规则，对 SDTM 风格数据输出带证据链的异常清单。**
 
-[![CI](https://github.com/caosheng-hub/clin-audit-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/caosheng-hub/clin-audit-agent/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-2f6f5e.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-244b5a.svg)](pyproject.toml)
 [![Engine](https://img.shields.io/badge/Engine-DuckDB-f2c94c.svg)](https://duckdb.org/)
@@ -160,7 +159,7 @@ python -m pytest -q
 python -m clinagent.cli all
 ```
 
-CI 会在 Python 3.10、3.12、3.13 上运行测试，并在 3.12 上执行一次 CLI smoke test。仓库中的数据由固定 seed=42 生成，可直接复现。
+仓库中的数据由固定 seed=42 生成，可直接复现；完整测试覆盖规则覆盖、SQL 安全、零误报与端到端确定性。项目要求 Python 3.10+。
 
 只想查看某一份数据：
 
