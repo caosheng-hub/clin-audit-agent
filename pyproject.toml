@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "clin-audit-agent"
+version = "0.1.0"
+description = "Compile clinical protocol clauses into executable, evidence-backed data checks."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "操胜", email = "266749826+caosheng-hub@users.noreply.github.com" },
+]
+keywords = [
+  "clinical-trials",
+  "sdtm",
+  "data-quality",
+  "rule-engine",
+  "duckdb",
+  "llm",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering :: Medical Science Apps.",
+]
+dependencies = [
+  "duckdb>=1.1,<2",
+  "pydantic>=2.7,<3",
+  "PyYAML>=6.0,<7",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0,<9",
+]
+
+[project.urls]
+Homepage = "https://github.com/caosheng-hub/clin-audit-agent"
+Repository = "https://github.com/caosheng-hub/clin-audit-agent"
+Issues = "https://github.com/caosheng-hub/clin-audit-agent/issues"
+
+[tool.setuptools.packages.find]
+include = ["clinagent*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

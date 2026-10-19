@@ -1,0 +1,1313 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ClinAudit：将临床方案条款编译为可审计 SQL 规则，并输出带证据链的异常清单。">
+  <title>ClinAudit · 临床数据核查演示</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f3f0e8;
+      --surface: #fffdf7;
+      --ink: #14231f;
+      --muted: #64716b;
+      --line: #d8d3c6;
+      --line-strong: #bdb7a8;
+      --green: #196b5a;
+      --green-soft: #dfece6;
+      --green-dark: #0d2922;
+      --amber: #a96416;
+      --amber-soft: #f6e8d2;
+      --red: #a43a32;
+      --red-soft: #f4dfda;
+      --blue: #315e72;
+      --shadow: 0 14px 40px rgba(23, 38, 32, 0.08);
+      --radius: 16px;
+      --sans: "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+      --mono: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.55;
+    }
+
+    a { color: inherit; }
+
+    button, input, select { font: inherit; }
+
+    button { cursor: pointer; }
+
+    .topbar {
+      background: var(--green-dark);
+      color: #ecf1ed;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .topbar-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      min-height: 64px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.36);
+      border-radius: 10px;
+      font: 600 12px/1 var(--mono);
+      letter-spacing: 0.04em;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .brand-text strong { font-size: 16px; letter-spacing: 0.01em; }
+
+    .brand-text small {
+      margin-top: 3px;
+      font: 500 9px/1.2 var(--mono);
+      letter-spacing: 0.12em;
+      color: #9eb5ac;
+    }
+
+    .topbar-right { display: flex; align-items: center; gap: 14px; }
+
+    .topbar .chip {
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      padding: 5px 10px;
+      color: #bcd0c8;
+      font: 500 10px/1.2 var(--mono);
+      letter-spacing: 0.03em;
+    }
+
+    .gh-link {
+      text-decoration: none;
+      font-size: 13px;
+      color: #f5f8f6;
+    }
+
+    .gh-link:hover { color: #a6d7c7; }
+
+    .page {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 24px 64px;
+    }
+
+    .hero {
+      padding: 48px 0 34px;
+      background-image: radial-gradient(rgba(20, 35, 31, 0.12) 0.8px, transparent 0.8px);
+      background-size: 22px 22px;
+      background-position: 0 0;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(340px, 0.9fr);
+      gap: 44px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      margin: 0 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--green);
+      font: 600 10.5px/1.3 var(--mono);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow .pulse {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 4px rgba(25, 107, 90, 0.12);
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 760px;
+      font-size: clamp(38px, 5vw, 64px);
+      line-height: 1.08;
+      letter-spacing: -0.055em;
+      font-weight: 650;
+    }
+
+    h1 .accent { color: var(--green); }
+
+    .lede {
+      max-width: 650px;
+      margin: 22px 0 0;
+      color: #4e5d57;
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 42px;
+      padding: 0 17px;
+      border-radius: 9px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid transparent;
+      transition: transform 150ms ease, background 150ms ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+
+    .btn.primary { background: var(--green); color: #fff; }
+    .btn.primary:hover { background: #12594b; }
+    .btn.ghost { border-color: var(--line-strong); color: var(--ink); background: rgba(255, 253, 247, 0.6); }
+
+    .hero-foot {
+      margin: 18px 0 0;
+      color: #7b867f;
+      font: 500 11px/1.4 var(--mono);
+    }
+
+    .proof-card {
+      overflow: hidden;
+      background: var(--green-dark);
+      color: #eef4f0;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .proof-top, .proof-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 18px;
+      color: #9eb5ac;
+      font: 500 9.5px/1.3 var(--mono);
+      letter-spacing: 0.1em;
+    }
+
+    .proof-top { border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+    .proof-foot { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+    .proof-id { color: #cfe4db; }
+
+    .proof-block { padding: 17px 18px 12px; }
+
+    .proof-label {
+      display: block;
+      margin-bottom: 7px;
+      color: #8ca59b;
+      font: 500 9px/1.3 var(--mono);
+      letter-spacing: 0.1em;
+    }
+
+    .proof-block p {
+      margin: 0;
+      color: #eef4f0;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .proof-compile {
+      margin: 0 18px;
+      padding: 9px 11px;
+      border-left: 2px solid #4e917e;
+      background: rgba(255, 255, 255, 0.055);
+      color: #c4dbd1;
+      font: 12px/1.5 var(--mono);
+    }
+
+    .finding {
+      margin: 2px 18px 14px;
+      padding: 13px 14px;
+      background: #17352c;
+      border-radius: 10px;
+    }
+
+    .finding-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 3px 0;
+      font: 12px/1.5 var(--mono);
+      color: #c8d9d1;
+    }
+
+    .finding-row .mono { color: #91aaa0; }
+    .finding-row .bad { color: #f0b1a6; }
+
+    .finding-note {
+      margin-top: 6px !important;
+      color: #91aaa0 !important;
+      font-size: 11px !important;
+    }
+
+    .sev-critical {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #f6c5bb;
+      font: 600 10px/1.2 var(--mono);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .sev-critical::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #df7d6d;
+    }
+
+    .scope-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 13px 16px;
+      border: 1px solid #dfd1bb;
+      border-left: 3px solid var(--amber);
+      border-radius: 10px;
+      background: #fbf5e9;
+      color: #614e36;
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    .scope-note strong { color: #4b3823; }
+    .note-mark {
+      flex: 0 0 auto;
+      width: 18px;
+      height: 18px;
+      display: grid;
+      place-items: center;
+      margin-top: 1px;
+      border: 1px solid #bb925e;
+      border-radius: 50%;
+      color: #8b5e26;
+      font: 600 11px/1 var(--mono);
+    }
+
+    .scope-note p { margin: 0; }
+    .scope-note a { color: #7d4c18; font-weight: 600; white-space: nowrap; }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+      margin: 18px 0 34px;
+    }
+
+    .kpi {
+      min-height: 104px;
+      padding: 17px 16px 14px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+
+    .kpi-label {
+      display: block;
+      min-height: 28px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .kpi-value {
+      display: block;
+      margin-top: 6px;
+      font: 600 27px/1.1 var(--sans);
+      letter-spacing: -0.04em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .kpi-value.green { color: var(--green); }
+    .kpi-note { display: block; margin-top: 7px; color: #8a938d; font: 10px/1.3 var(--mono); }
+
+    .section { margin-top: 34px; }
+
+    .section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 28px;
+      margin-bottom: 16px;
+    }
+
+    .section-head .eyebrow { margin-bottom: 8px; }
+
+    h2 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.2;
+      letter-spacing: -0.035em;
+      font-weight: 650;
+    }
+
+    .section-copy {
+      max-width: 440px;
+      margin: 0 0 2px;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.7;
+      text-align: right;
+    }
+
+    .trial-tabs { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px; }
+
+    .trial-tab {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 253, 247, 0.55);
+      color: #50605a;
+      padding: 8px 13px;
+      font: 600 11px/1.2 var(--mono);
+      transition: background 150ms ease, color 150ms ease, border 150ms ease;
+    }
+
+    .trial-tab:hover { border-color: var(--line-strong); }
+
+    .trial-tab[aria-selected="true"] {
+      background: var(--green-dark);
+      border-color: var(--green-dark);
+      color: #f3f7f5;
+    }
+
+    .trial-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      padding: 17px 19px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-bottom: 0;
+      border-radius: 13px 13px 0 0;
+    }
+
+    .trial-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .phase-badge {
+      padding: 3px 7px;
+      border-radius: 4px;
+      background: var(--green-soft);
+      color: var(--green);
+      font: 600 9px/1.2 var(--mono);
+      letter-spacing: 0.04em;
+    }
+
+    .trial-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font: 11px/1.4 var(--mono);
+    }
+
+    .trial-meta span + span::before {
+      content: "/";
+      margin-right: 10px;
+      color: #b6beb9;
+    }
+
+    .trial-meta .clean { color: var(--green); }
+    .trial-meta .metric { color: var(--ink); }
+
+    .workbench {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 350px;
+      min-height: 480px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 0 0 13px 13px;
+      overflow: hidden;
+    }
+
+    .results-panel { min-width: 0; border-right: 1px solid var(--line); }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px;
+      border-bottom: 1px solid var(--line);
+      background: #fbf9f2;
+    }
+
+    .search {
+      position: relative;
+      flex: 1;
+      min-width: 140px;
+    }
+
+    .search span {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #939d97;
+      font-size: 15px;
+      pointer-events: none;
+    }
+
+    .search input,
+    .toolbar select {
+      width: 100%;
+      height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fffdf7;
+      color: var(--ink);
+      outline: none;
+    }
+
+    .search input { padding: 0 10px 0 29px; font-size: 11px; }
+    .toolbar select { width: auto; padding: 0 24px 0 9px; font-size: 10.5px; color: #51615a; }
+
+    .search input:focus, .toolbar select:focus {
+      border-color: #8cb5a8;
+      box-shadow: 0 0 0 3px rgba(25, 107, 90, 0.1);
+    }
+
+    .result-count {
+      margin-left: auto;
+      color: #7d8882;
+      font: 10px/1.3 var(--mono);
+      white-space: nowrap;
+    }
+
+    .table-wrap { max-height: 474px; overflow: auto; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 11px; }
+
+    thead th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      padding: 10px 12px;
+      text-align: left;
+      background: #f7f4ec;
+      border-bottom: 1px solid var(--line);
+      color: #79857f;
+      font: 600 9.5px/1.3 var(--mono);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #ece8dd;
+      cursor: pointer;
+      outline: none;
+      transition: background 120ms ease;
+    }
+
+    tbody tr:hover, tbody tr:focus-visible { background: #f7f4ec; }
+    tbody tr.selected { background: #eaf3ee; box-shadow: inset 3px 0 var(--green); }
+
+    td { padding: 10px 12px; vertical-align: top; color: #33433d; }
+
+    .subject { font: 600 11px/1.4 var(--mono); color: var(--ink); }
+    .rule-name { display: block; font: 10px/1.45 var(--mono); color: #5a6a63; }
+    .cell-muted { color: #78847e; font-size: 10.5px; }
+    .cell-strong { font-weight: 600; }
+    .cell-mono { font-family: var(--mono); font-size: 10px; color: #6b7771; }
+
+    .severity {
+      display: inline-block;
+      padding: 3px 7px;
+      border-radius: 999px;
+      font: 600 9px/1.2 var(--mono);
+      white-space: nowrap;
+    }
+
+    .severity.critical { background: var(--red-soft); color: var(--red); }
+    .severity.major { background: var(--amber-soft); color: var(--amber); }
+    .severity.minor { background: #e8ece8; color: #61706a; }
+
+    .empty-state {
+      padding: 48px 20px;
+      text-align: center;
+      color: #7b867f;
+      font-size: 12px;
+    }
+
+    .detail-panel {
+      padding: 18px;
+      background: #fcfaf4;
+      overflow: auto;
+      max-height: 558px;
+    }
+
+    .detail-label {
+      color: #89948e;
+      font: 600 9px/1.3 var(--mono);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .detail-title {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 5px 0 16px;
+    }
+
+    .detail-title h3 {
+      margin: 0;
+      font: 600 18px/1.25 var(--mono);
+      letter-spacing: -0.03em;
+    }
+
+    .detail-section {
+      padding: 12px 0;
+      border-top: 1px solid #e4dfd3;
+    }
+
+    .detail-section p { margin: 5px 0 0; font-size: 11.5px; line-height: 1.7; color: #4f5e57; }
+
+    .quote {
+      margin: 7px 0 0;
+      padding: 9px 11px;
+      border-left: 2px solid var(--green);
+      background: #f1f6f2;
+      color: #3d5149;
+      font-size: 11.5px;
+      line-height: 1.7;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .detail-item span { display: block; color: #8a958f; font: 9px/1.3 var(--mono); }
+    .detail-item strong { display: block; margin-top: 3px; font-size: 11px; font-weight: 600; }
+
+    .code-block {
+      margin: 7px 0 0;
+      padding: 9px 10px;
+      overflow-wrap: anywhere;
+      border-radius: 6px;
+      background: #1b2d27;
+      color: #dce9e3;
+      font: 10px/1.6 var(--mono);
+    }
+
+    .detail-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 13px;
+      color: var(--green);
+      font-size: 10.5px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .detail-link:hover { text-decoration: underline; }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 12px;
+    }
+
+    .panel {
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: var(--surface);
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 17px;
+    }
+
+    .panel-title h3 { margin: 0; font-size: 14px; letter-spacing: -0.015em; }
+    .panel-title span { color: #8a948e; font: 10px/1.3 var(--mono); }
+
+    .bar-list { display: grid; gap: 12px; }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 97px minmax(0, 1fr) 26px;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .bar-label { color: #58675f; font-size: 10.5px; }
+    .bar-track { height: 7px; border-radius: 99px; overflow: hidden; background: #edeae1; }
+    .bar-fill { height: 100%; border-radius: 99px; background: var(--green); transition: width 250ms ease; }
+    .bar-count { color: #66746d; font: 10px/1.3 var(--mono); text-align: right; }
+
+    .severity-stack {
+      display: flex;
+      height: 14px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: #ece9e0;
+    }
+
+    .severity-stack span { display: block; height: 100%; }
+    .severity-stack .critical { background: #b85a4e; }
+    .severity-stack .major { background: #c28b3d; }
+    .severity-stack .minor { background: #92a69b; }
+
+    .severity-legend {
+      display: grid;
+      gap: 9px;
+      margin-top: 15px;
+    }
+
+    .legend-row {
+      display: grid;
+      grid-template-columns: 10px 1fr auto;
+      gap: 8px;
+      align-items: center;
+      color: #5a6962;
+      font-size: 10.5px;
+    }
+
+    .legend-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .legend-dot.critical { background: #b85a4e; }
+    .legend-dot.major { background: #c28b3d; }
+    .legend-dot.minor { background: #92a69b; }
+    .legend-row strong { color: var(--ink); font: 600 10px/1.3 var(--mono); }
+
+    .domain-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid #e7e2d7;
+    }
+
+    .domain-chip {
+      padding: 4px 7px;
+      border-radius: 5px;
+      background: #f1eee5;
+      color: #65736c;
+      font: 10px/1.2 var(--mono);
+    }
+
+    .method-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .method {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 253, 247, 0.56);
+    }
+
+    .method-index { color: var(--green); font: 600 10px/1.3 var(--mono); letter-spacing: 0.08em; }
+    .method h3 { margin: 11px 0 7px; font-size: 13px; }
+    .method p { margin: 0; color: var(--muted); font-size: 11.5px; line-height: 1.7; }
+
+    footer {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      margin-top: 38px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: #79857e;
+      font-size: 10.5px;
+      line-height: 1.7;
+    }
+
+    footer p { margin: 0; max-width: 760px; }
+    footer a { color: var(--green); text-decoration: none; }
+    footer .stamp { flex: 0 0 auto; font: 10px/1.6 var(--mono); text-align: right; }
+
+    .load-error {
+      margin: 20px 0;
+      padding: 14px;
+      border: 1px solid #d9a098;
+      background: #faeae7;
+      color: #8f342d;
+      border-radius: 8px;
+      font-size: 12px;
+    }
+
+    [hidden] { display: none !important; }
+
+    @media (max-width: 980px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 28px; }
+      .hero-grid > * { min-width: 0; }
+      .proof-card { width: 100%; max-width: 620px; }
+      .proof-compile { overflow-wrap: anywhere; }
+      .kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .workbench { grid-template-columns: 1fr; }
+      .results-panel { border-right: 0; border-bottom: 1px solid var(--line); }
+      .detail-panel { max-height: none; }
+      .section-head { align-items: flex-start; flex-direction: column; gap: 8px; }
+      .section-copy { text-align: left; }
+    }
+
+    @media (max-width: 700px) {
+      .page { padding: 0 15px 42px; }
+      .topbar-inner { padding: 0 15px; }
+      .hero { padding-top: 32px; }
+      h1 { font-size: 39px; }
+      .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .kpi:nth-child(5), .kpi:nth-child(6) { min-height: 96px; }
+      .overview-grid, .method-grid { grid-template-columns: 1fr; }
+      .scope-note { font-size: 11px; }
+      .scope-note a { display: none; }
+      .toolbar { flex-wrap: wrap; }
+      .search { flex-basis: 100%; }
+      .result-count { margin-left: 0; }
+      .table-wrap { max-height: 420px; }
+      thead th:nth-child(3), td:nth-child(3) { display: none; }
+      .trial-meta span + span::before { display: none; }
+      footer { flex-direction: column; }
+      footer .stamp { text-align: left; }
+    }
+
+    @media (max-width: 520px) {
+      .topbar .chip { display: none; }
+      h1 { font-size: 36px; }
+      .hero-foot { font-size: 10px; }
+      .proof-compile { font-size: 11px; }
+    }
+
+    @media (max-width: 400px) {
+      h1 { font-size: 33px; }
+      .proof-top, .proof-foot, .proof-block { padding-left: 14px; padding-right: 14px; }
+      .proof-compile { margin-left: 14px; margin-right: 14px; }
+      .finding { margin-left: 14px; margin-right: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#top">
+        <span class="brand-mark">CA</span>
+        <span class="brand-text">
+          <strong>ClinAudit</strong>
+          <small>PROTOCOL-GROUNDED AUDIT</small>
+        </span>
+      </a>
+      <div class="topbar-right">
+        <span class="chip">SYNTHETIC · v0.1</span>
+        <a class="gh-link" href="https://github.com/caosheng-hub/clin-audit-agent" target="_blank" rel="noreferrer">GitHub ↗</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="page" id="top">
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow"><span class="pulse"></span>Protocol → DSL → SQL → Evidence</p>
+          <h1>每条异常，<br><span class="accent">都能回到方案原文。</span></h1>
+          <p class="lede">
+            ClinAudit 将受限规则 DSL 编译为 DuckDB SQL，对 7 个 SDTM 风格域执行核查，
+            输出受试者级、字段级的可追溯证据。当前版本聚焦规则引擎闭环，所有数据均为合成数据。
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#workbench">查看核查结果</a>
+            <a class="btn ghost" href="https://github.com/caosheng-hub/clin-audit-agent" target="_blank" rel="noreferrer">浏览源代码 ↗</a>
+          </div>
+          <p class="hero-foot">2 protocols · 66 rules · 68 injected anomalies · 100% synthetic</p>
+        </div>
+
+        <aside class="proof-card" aria-label="规则证据链示例">
+          <div class="proof-top"><span>TRACE ONE FINDING</span><span class="proof-id">AE · 6.1</span></div>
+          <div class="proof-block">
+            <span class="proof-label">PROTOCOL QUOTE</span>
+            <p>“不良事件开始日期（AESTDTC）不得早于首次给药日期（RFSTDTC）。”</p>
+          </div>
+          <div class="proof-compile">let rule = date_order(AESTDTC &gt;= RFSTDTC)</div>
+          <div class="proof-block finding">
+            <span class="proof-label">FINDING · S018</span>
+            <div class="finding-row"><span class="mono">AESTDTC</span><span class="bad">2025-04-07</span></div>
+            <div class="finding-row"><span class="mono">RFSTDTC</span><span>2025-04-12</span></div>
+            <p class="finding-note">开始日期早于首次给药日期 5 天 · evidence retained</p>
+          </div>
+          <div class="proof-foot"><span class="sev-critical">Major finding</span><span>SECTION 6.1</span></div>
+        </aside>
+      </div>
+    </section>
+
+    <div class="scope-note">
+      <span class="note-mark">i</span>
+      <p>
+        <strong>指标口径：</strong>本页为 P0 的 gold-rule 引擎自检结果（规则由生成器直接提供），
+        用于验证编译、执行、异常注入和评测流程；<strong>它不是 LLM 从方案文本中抽取规则的准确率</strong>。
+      </p>
+      <a href="https://github.com/caosheng-hub/clin-audit-agent#%E8%AF%84%E6%B5%8B%E7%BB%93%E6%9E%9C" target="_blank" rel="noreferrer">阅读评测说明 →</a>
+    </div>
+
+    <section class="kpi-grid" id="kpis" aria-label="基准指标"></section>
+
+    <section class="section" id="workbench">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Audit workbench</p>
+          <h2>逐条核查结果</h2>
+        </div>
+        <p class="section-copy">切换方案并筛选异常；点击任意一行，查看规则原文、期望值、实际值与字段证据。</p>
+      </div>
+
+      <div class="trial-tabs" id="trial-tabs" role="tablist" aria-label="选择方案"></div>
+      <div class="trial-summary" id="trial-summary"></div>
+
+      <div class="workbench">
+        <div class="results-panel">
+          <div class="toolbar">
+            <label class="search">
+              <span>⌕</span>
+              <input id="search-input" type="search" placeholder="搜索受试者、规则、字段或值" autocomplete="off">
+            </label>
+            <select id="severity-filter" aria-label="按严重级别筛选">
+              <option value="all">全部级别</option>
+              <option value="critical">Critical</option>
+              <option value="major">Major</option>
+              <option value="minor">Minor</option>
+            </select>
+            <select id="type-filter" aria-label="按检查类型筛选"></select>
+            <span class="result-count" id="result-count"></span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>受试者</th>
+                  <th>规则 / 域</th>
+                  <th>期望</th>
+                  <th>实际</th>
+                  <th>级别</th>
+                </tr>
+              </thead>
+              <tbody id="anomaly-rows"></tbody>
+            </table>
+            <div class="empty-state" id="empty-state" hidden>没有符合当前筛选条件的异常。</div>
+          </div>
+        </div>
+        <aside class="detail-panel" id="detail-panel" aria-live="polite"></aside>
+      </div>
+    </section>
+
+    <section class="section" aria-label="基准构成">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Benchmark anatomy</p>
+          <h2>这套基准由什么构成</h2>
+        </div>
+        <p class="section-copy">数据、规则与异常均为固定种子生成；干净数据单独执行，用于验证零误报。</p>
+      </div>
+      <div class="overview-grid">
+        <article class="panel">
+          <div class="panel-title"><h3>规则构成</h3><span id="rule-total"></span></div>
+          <div class="bar-list" id="coverage-chart"></div>
+        </article>
+        <article class="panel">
+          <div class="panel-title"><h3>异常分布</h3><span id="anomaly-total"></span></div>
+          <div class="severity-stack" id="severity-stack"></div>
+          <div class="severity-legend" id="severity-legend"></div>
+          <div class="domain-list" id="domain-list"></div>
+        </article>
+      </div>
+      <div class="method-grid">
+        <article class="method">
+          <span class="method-index">01 / COMPILE</span>
+          <h3>受限 DSL，而不是自由 SQL</h3>
+          <p>表、列、操作符和参数均经过白名单校验；字符串字面量统一转义。抽取层和执行层解耦，避免模型直接接触数据库。</p>
+        </article>
+        <article class="method">
+          <span class="method-index">02 / EXECUTE</span>
+          <h3>DuckDB 内存执行</h3>
+          <p>7 个 SDTM 风格 CSV 以只读视图加载，规则编译后逐条执行，返回受试者级异常与字段证据。</p>
+        </article>
+        <article class="method">
+          <span class="method-index">03 / EVALUATE</span>
+          <h3>注入异常 + 零误报检查</h3>
+          <p>每个方案注入 34 条已知异常，按 (subject_id, rule_id) 计算 P/R/F1 与分类型召回；clean 数据必须零检出。</p>
+        </article>
+      </div>
+    </section>
+
+    <div id="load-error" class="load-error" hidden>
+      演示数据未加载。请在项目根目录运行 <code>python scripts/build_demo.py</code> 后刷新页面。
+    </div>
+
+    <footer>
+      <p>
+        <strong>数据与声明：</strong>全部受试者、方案和指标均为合成数据，不包含真实患者信息，也不代表任何机构的生产系统。
+        当前页面展示 P0 规则引擎自检，不是 LLM 抽取效果。代码以 MIT License 发布。
+      </p>
+      <div class="stamp">
+        <div id="generated-at"></div>
+        <a href="https://github.com/caosheng-hub/clin-audit-agent" target="_blank" rel="noreferrer">github.com/caosheng-hub/clin-audit-agent ↗</a>
+      </div>
+    </footer>
+  </main>
+
+  <script src="demo-data.js"></script>
+  <script>
+    const DATA = window.CLIN_AUDIT_DATA;
+    const TYPE_LABELS = {
+      range: "范围",
+      required: "必填",
+      date_order: "日期顺序",
+      visit_window: "访视窗口",
+      consistency: "字段一致性",
+      conmed_prohibited: "禁用合并用药"
+    };
+    const SEVERITY_LABELS = { critical: "Critical", major: "Major", minor: "Minor" };
+    const SEVERITY_RANK = { critical: 0, major: 1, minor: 2 };
+    const state = {
+      trial: null,
+      severity: "all",
+      type: "all",
+      query: "",
+      selected: null
+    };
+
+    const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[char]));
+
+    const fmt = (value, digits = 3) => Number(value).toFixed(digits);
+
+    function activeTrial() {
+      return DATA.trials.find((trial) => trial.id === state.trial) || DATA.trials[0];
+    }
+
+    function anomalyRule(anomaly, trial) {
+      return trial.rules.find((rule) => rule.rule_id === anomaly.rule_id) || null;
+    }
+
+    function sortedAnomalies(trial) {
+      return trial.anomalies
+        .slice()
+        .sort((left, right) =>
+          (SEVERITY_RANK[left.severity] ?? 9) - (SEVERITY_RANK[right.severity] ?? 9)
+          || left.subject_id.localeCompare(right.subject_id)
+        );
+    }
+
+    function renderKpis() {
+      const overall = DATA.overall;
+      const cards = [
+        ["合成方案", DATA.trials.length, "protocols", ""],
+        ["可执行规则", DATA.trials.reduce((sum, trial) => sum + trial.rulesCount, 0), "DSL rules", ""],
+        ["受试者", DATA.trials.reduce((sum, trial) => sum + trial.subjects, 0), "synthetic subjects", ""],
+        ["注入异常", overall.truth, "ground truth", ""],
+        ["Precision / Recall / F1", fmt(overall.f1), "gold-rule self-check", "green"],
+        ["干净数据误报", overall.clean_false_positives, "must be zero", "green"]
+      ];
+      document.getElementById("kpis").innerHTML = cards.map(([label, value, note, tone]) => `
+        <article class="kpi">
+          <span class="kpi-label">${esc(label)}</span>
+          <strong class="kpi-value ${tone}">${esc(value)}</strong>
+          <span class="kpi-note">${esc(note)}</span>
+        </article>
+      `).join("");
+    }
+
+    function renderTrialTabs() {
+      document.getElementById("trial-tabs").innerHTML = DATA.trials.map((trial) => `
+        <button class="trial-tab" role="tab"
+          aria-selected="${trial.id === state.trial}"
+          data-trial="${esc(trial.id)}">${esc(trial.id)}<span aria-hidden="true"> · </span>${esc(trial.indication)}</button>
+      `).join("");
+      document.querySelectorAll(".trial-tab").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.trial = button.dataset.trial;
+          state.selected = null;
+          state.type = "all";
+          render();
+        });
+      });
+    }
+
+    function renderSummary() {
+      const trial = activeTrial();
+      const metrics = trial.metrics;
+      document.getElementById("trial-summary").innerHTML = `
+        <div class="trial-title">
+          <span>${esc(trial.title)}</span>
+          <span class="phase-badge">PHASE ${esc(trial.phase)}</span>
+        </div>
+        <div class="trial-meta">
+          <span>${trial.subjects} 名受试者</span>
+          <span>${trial.rulesCount} 条规则</span>
+          <span>${trial.injected} 条注入异常</span>
+          <span class="clean">clean: ${trial.cleanAnomalies} 异常</span>
+          <span class="metric">P ${fmt(metrics.precision)} · R ${fmt(metrics.recall)}</span>
+          <span>${trial.executionMs.toFixed(1)} ms</span>
+        </div>
+      `;
+    }
+
+    function renderTypeFilter() {
+      const trial = activeTrial();
+      const types = [...new Set(trial.rules.map((rule) => rule.check_type))];
+      document.getElementById("type-filter").innerHTML = `
+        <option value="all">全部类型</option>
+        ${types.map((type) => `<option value="${esc(type)}">${esc(TYPE_LABELS[type] || type)}</option>`).join("")}
+      `;
+      document.getElementById("type-filter").value = state.type;
+    }
+
+    function filteredAnomalies(trial) {
+      const query = state.query.trim().toLowerCase();
+      return sortedAnomalies(trial).filter((anomaly) => {
+        const rule = anomalyRule(anomaly, trial);
+        const haystack = [
+          anomaly.subject_id, anomaly.rule_id, anomaly.field, anomaly.actual,
+          anomaly.expected, rule?.code, rule?.section_title
+        ].join(" ").toLowerCase();
+        return (state.severity === "all" || anomaly.severity === state.severity)
+          && (state.type === "all" || anomaly.check_type === state.type)
+          && (!query || haystack.includes(query));
+      });
+    }
+
+    function selectAnomaly(anomaly) {
+      state.selected = anomaly.anomaly_id;
+      renderTable();
+      renderDetail(anomaly);
+    }
+
+    function renderTable() {
+      const trial = activeTrial();
+      const rows = filteredAnomalies(trial);
+      const tbody = document.getElementById("anomaly-rows");
+      const empty = document.getElementById("empty-state");
+      const count = document.getElementById("result-count");
+      count.textContent = `${rows.length} / ${trial.anomalies.length} 条`;
+      empty.hidden = rows.length > 0;
+
+      if (!rows.some((row) => row.anomaly_id === state.selected) && rows.length) {
+        state.selected = rows[0].anomaly_id;
+      }
+
+      tbody.innerHTML = rows.map((anomaly) => {
+        const rule = anomalyRule(anomaly, trial);
+        return `
+          <tr tabindex="0" data-id="${esc(anomaly.anomaly_id)}"
+              class="${anomaly.anomaly_id === state.selected ? "selected" : ""}">
+            <td class="subject">${esc(anomaly.subject_id)}</td>
+            <td>
+              <span class="rule-name">${esc(rule?.code || anomaly.rule_id)}</span>
+              <span class="cell-mono">${esc(anomaly.domain)} · ${esc(anomaly.field || "—")}</span>
+            </td>
+            <td class="cell-muted">${esc(anomaly.expected)}</td>
+            <td class="cell-strong">${esc(anomaly.actual)}</td>
+            <td><span class="severity ${esc(anomaly.severity)}">${esc(SEVERITY_LABELS[anomaly.severity] || anomaly.severity)}</span></td>
+          </tr>
+        `;
+      }).join("");
+
+      tbody.querySelectorAll("tr").forEach((row) => {
+        row.addEventListener("click", () => {
+          const anomaly = trial.anomalies.find((item) => item.anomaly_id === row.dataset.id);
+          if (anomaly) selectAnomaly(anomaly);
+        });
+        row.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            row.click();
+          }
+        });
+      });
+
+      const selected = rows.find((row) => row.anomaly_id === state.selected) || rows[0] || null;
+      renderDetail(selected);
+    }
+
+    function renderDetail(anomaly) {
+      const panel = document.getElementById("detail-panel");
+      if (!anomaly) {
+        panel.innerHTML = `<p class="detail-label">Finding detail</p><p>当前筛选条件下没有异常。</p>`;
+        return;
+      }
+      const trial = activeTrial();
+      const rule = anomalyRule(anomaly, trial);
+      const ruleLink = `https://github.com/caosheng-hub/clin-audit-agent/blob/main/reports/${encodeURIComponent(trial.id)}_anomalies.json`;
+      panel.innerHTML = `
+        <span class="detail-label">Finding detail</span>
+        <div class="detail-title">
+          <h3>${esc(anomaly.subject_id)} / ${esc(anomaly.field || "record")}</h3>
+          <span class="severity ${esc(anomaly.severity)}">${esc(SEVERITY_LABELS[anomaly.severity] || anomaly.severity)}</span>
+        </div>
+
+        <div class="detail-section">
+          <span class="detail-label">规则</span>
+          <p><strong>${esc(rule?.code || anomaly.rule_id)}</strong></p>
+          <p class="cell-mono">${esc(anomaly.rule_id)}</p>
+        </div>
+
+        <div class="detail-section">
+          <span class="detail-label">方案出处</span>
+          <p>${esc(rule?.section_id || "—")} · ${esc(rule?.section_title || "—")}</p>
+          <blockquote class="quote">${esc(rule?.quote || "未找到引用原文")}</blockquote>
+        </div>
+
+        <div class="detail-section">
+          <span class="detail-label">核查口径</span>
+          <div class="detail-grid">
+            <div class="detail-item"><span>DOMAIN</span><strong>${esc(anomaly.domain)}</strong></div>
+            <div class="detail-item"><span>CHECK TYPE</span><strong>${esc(TYPE_LABELS[anomaly.check_type] || anomaly.check_type)}</strong></div>
+            <div class="detail-item"><span>EXPECTED</span><strong>${esc(anomaly.expected)}</strong></div>
+            <div class="detail-item"><span>ACTUAL</span><strong>${esc(anomaly.actual)}</strong></div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <span class="detail-label">Evidence</span>
+          <pre class="code-block">${esc(anomaly.evidence)}</pre>
+        </div>
+
+        <a class="detail-link" href="${ruleLink}" target="_blank" rel="noreferrer">查看原始异常 JSON ↗</a>
+      `;
+    }
+
+    function renderBreakdown() {
+      const trial = activeTrial();
+      const ruleCounts = {};
+      trial.rules.forEach((rule) => {
+        ruleCounts[rule.check_type] = (ruleCounts[rule.check_type] || 0) + 1;
+      });
+      const maxRules = Math.max(...Object.values(ruleCounts), 1);
+      document.getElementById("rule-total").textContent = `${trial.rulesCount} rules`;
+      document.getElementById("coverage-chart").innerHTML = Object.entries(ruleCounts)
+        .sort((left, right) => right[1] - left[1])
+        .map(([type, count]) => `
+          <div class="bar-row">
+            <span class="bar-label">${esc(TYPE_LABELS[type] || type)}</span>
+            <div class="bar-track"><div class="bar-fill" style="width:${(count / maxRules) * 100}%"></div></div>
+            <span class="bar-count">${count}</span>
+          </div>
+        `).join("");
+
+      const severityCounts = { critical: 0, major: 0, minor: 0 };
+      const domainCounts = {};
+      trial.anomalies.forEach((anomaly) => {
+        severityCounts[anomaly.severity] = (severityCounts[anomaly.severity] || 0) + 1;
+        domainCounts[anomaly.domain] = (domainCounts[anomaly.domain] || 0) + 1;
+      });
+      const total = trial.anomalies.length;
+      document.getElementById("anomaly-total").textContent = `${total} findings`;
+      document.getElementById("severity-stack").innerHTML = ["critical", "major", "minor"]
+        .map((severity) => `<span class="${severity}" style="width:${(severityCounts[severity] / total) * 100}%"></span>`)
+        .join("");
+      document.getElementById("severity-legend").innerHTML = ["critical", "major", "minor"]
+        .map((severity) => `
+          <div class="legend-row">
+            <span class="legend-dot ${severity}"></span>
+            <span>${esc(SEVERITY_LABELS[severity])}</span>
+            <strong>${severityCounts[severity]}</strong>
+          </div>
+        `).join("");
+      document.getElementById("domain-list").innerHTML = Object.entries(domainCounts)
+        .sort((left, right) => right[1] - left[1])
+        .map(([domain, count]) => `<span class="domain-chip">${esc(domain)} · ${count}</span>`)
+        .join("");
+    }
+
+    function render() {
+      renderTrialTabs();
+      renderSummary();
+      renderTypeFilter();
+      renderTable();
+      renderBreakdown();
+    }
+
+    function bindControls() {
+      document.getElementById("search-input").addEventListener("input", (event) => {
+        state.query = event.target.value;
+        renderTable();
+      });
+      document.getElementById("severity-filter").addEventListener("change", (event) => {
+        state.severity = event.target.value;
+        renderTable();
+      });
+      document.getElementById("type-filter").addEventListener("change", (event) => {
+        state.type = event.target.value;
+        renderTable();
+      });
+    }
+
+    function boot() {
+      if (!DATA || !DATA.trials || !DATA.trials.length) {
+        document.getElementById("load-error").hidden = false;
+        return;
+      }
+      state.trial = DATA.trials[0].id;
+      const trial = activeTrial();
+      state.selected = sortedAnomalies(trial)[0]?.anomaly_id || null;
+      document.getElementById("generated-at").textContent = `benchmark ${DATA.generatedAt.replace("T", " ")}`;
+      renderKpis();
+      bindControls();
+      render();
+    }
+
+    boot();
+  </script>
+</body>
+</html>

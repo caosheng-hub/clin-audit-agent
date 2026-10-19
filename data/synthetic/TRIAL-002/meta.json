@@ -1,0 +1,45 @@
+{
+  "trial_id": "TRIAL-002",
+  "title": "非小细胞肺癌受试者中评估研究药物安全性及有效性的随机、双盲、安慰剂对照 II 期临床研究",
+  "indication": "非小细胞肺癌",
+  "phase": "II",
+  "age_min": 18,
+  "age_max": 75,
+  "bmi_min": 19.0,
+  "alt_max": 150.0,
+  "hgb_min": 110.0,
+  "creat_max": 150.0,
+  "visits": [
+    {
+      "code": "V1",
+      "name": "筛选期",
+      "day": -7,
+      "window": 2
+    },
+    {
+      "code": "V2",
+      "name": "第 2 次访视",
+      "day": 14,
+      "window": 3
+    },
+    {
+      "code": "V3",
+      "name": "第 3 次访视",
+      "day": 28,
+      "window": 3
+    },
+    {
+      "code": "V4",
+      "name": "研究结束访视",
+      "day": 56,
+      "window": 5
+    }
+  ],
+  "prohibited_cm": [
+    "华法林",
+    "利伐沙班"
+  ],
+  "rules": 33,
+  "subjects": 25,
+  "injected_anomalies": 34
+}

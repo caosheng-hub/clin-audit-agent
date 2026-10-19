@@ -1,0 +1,564 @@
+[
+  {
+    "rule_id": "TRIAL-002-AGE_RANGE-01",
+    "trial_id": "TRIAL-002",
+    "code": "AGE_RANGE",
+    "domain": "DM",
+    "field": "AGE",
+    "check_type": "range",
+    "params": {
+      "min": 18,
+      "max": 75
+    },
+    "severity": "critical",
+    "description": "年龄在 18 至 75 周岁之间（含边界）。",
+    "section_id": "3.1",
+    "section_title": "入选标准",
+    "quote": "年龄在 18 至 75 周岁之间（含边界）。"
+  },
+  {
+    "rule_id": "TRIAL-002-BMI_RANGE-02",
+    "trial_id": "TRIAL-002",
+    "code": "BMI_RANGE",
+    "domain": "DM",
+    "field": "BMI",
+    "check_type": "range",
+    "params": {
+      "min": 19.0
+    },
+    "severity": "critical",
+    "description": "筛选时体质指数（BMI）不得低于 19 kg/m²。",
+    "section_id": "3.1",
+    "section_title": "入选标准",
+    "quote": "筛选时体质指数（BMI）不得低于 19 kg/m²。"
+  },
+  {
+    "rule_id": "TRIAL-002-AGE_REQUIRED-03",
+    "trial_id": "TRIAL-002",
+    "code": "AGE_REQUIRED",
+    "domain": "DM",
+    "field": "AGE",
+    "check_type": "required",
+    "params": {},
+    "severity": "major",
+    "description": "年龄（AGE）为必填字段。",
+    "section_id": "3.1",
+    "section_title": "入选标准",
+    "quote": "年龄（AGE）为必填字段。"
+  },
+  {
+    "rule_id": "TRIAL-002-BMI_REQUIRED-04",
+    "trial_id": "TRIAL-002",
+    "code": "BMI_REQUIRED",
+    "domain": "DM",
+    "field": "BMI",
+    "check_type": "required",
+    "params": {},
+    "severity": "major",
+    "description": "体质指数（BMI）为必填字段。",
+    "section_id": "3.1",
+    "section_title": "入选标准",
+    "quote": "体质指数（BMI）为必填字段。"
+  },
+  {
+    "rule_id": "TRIAL-002-SEX_REQUIRED-05",
+    "trial_id": "TRIAL-002",
+    "code": "SEX_REQUIRED",
+    "domain": "DM",
+    "field": "SEX",
+    "check_type": "required",
+    "params": {},
+    "severity": "major",
+    "description": "受试者性别（SEX）为必填字段。",
+    "section_id": "3.1",
+    "section_title": "入选标准",
+    "quote": "受试者性别（SEX）为必填字段。"
+  },
+  {
+    "rule_id": "TRIAL-002-RFSTDTC_REQUIRED-06",
+    "trial_id": "TRIAL-002",
+    "code": "RFSTDTC_REQUIRED",
+    "domain": "DM",
+    "field": "RFSTDTC",
+    "check_type": "required",
+    "params": {},
+    "severity": "critical",
+    "description": "首次给药日期（RFSTDTC）为必填字段。",
+    "section_id": "3.1",
+    "section_title": "入选标准",
+    "quote": "首次给药日期（RFSTDTC）为必填字段。"
+  },
+  {
+    "rule_id": "TRIAL-002-VISIT_V1_WINDOW-07",
+    "trial_id": "TRIAL-002",
+    "code": "VISIT_V1_WINDOW",
+    "domain": "SV",
+    "field": "SVSTDTC",
+    "check_type": "visit_window",
+    "params": {
+      "visit": "V1",
+      "anchor": "RFSTDTC",
+      "target_day": -7,
+      "minus": 2,
+      "plus": 2
+    },
+    "severity": "major",
+    "description": "访视 V1（筛选期）计划于首次给药前第 7 天进行，允许窗口为 ±2 天。",
+    "section_id": "4.1",
+    "section_title": "访视计划",
+    "quote": "访视 V1（筛选期）计划于首次给药前第 7 天进行，允许窗口为 ±2 天。"
+  },
+  {
+    "rule_id": "TRIAL-002-VISIT_V2_WINDOW-08",
+    "trial_id": "TRIAL-002",
+    "code": "VISIT_V2_WINDOW",
+    "domain": "SV",
+    "field": "SVSTDTC",
+    "check_type": "visit_window",
+    "params": {
+      "visit": "V2",
+      "anchor": "RFSTDTC",
+      "target_day": 14,
+      "minus": 3,
+      "plus": 3
+    },
+    "severity": "major",
+    "description": "访视 V2（第 2 次访视）计划于首次给药后第 14 天进行，允许窗口为 ±3 天。",
+    "section_id": "4.1",
+    "section_title": "访视计划",
+    "quote": "访视 V2（第 2 次访视）计划于首次给药后第 14 天进行，允许窗口为 ±3 天。"
+  },
+  {
+    "rule_id": "TRIAL-002-VISIT_V3_WINDOW-09",
+    "trial_id": "TRIAL-002",
+    "code": "VISIT_V3_WINDOW",
+    "domain": "SV",
+    "field": "SVSTDTC",
+    "check_type": "visit_window",
+    "params": {
+      "visit": "V3",
+      "anchor": "RFSTDTC",
+      "target_day": 28,
+      "minus": 3,
+      "plus": 3
+    },
+    "severity": "major",
+    "description": "访视 V3（第 3 次访视）计划于首次给药后第 28 天进行，允许窗口为 ±3 天。",
+    "section_id": "4.1",
+    "section_title": "访视计划",
+    "quote": "访视 V3（第 3 次访视）计划于首次给药后第 28 天进行，允许窗口为 ±3 天。"
+  },
+  {
+    "rule_id": "TRIAL-002-VISIT_V4_WINDOW-10",
+    "trial_id": "TRIAL-002",
+    "code": "VISIT_V4_WINDOW",
+    "domain": "SV",
+    "field": "SVSTDTC",
+    "check_type": "visit_window",
+    "params": {
+      "visit": "V4",
+      "anchor": "RFSTDTC",
+      "target_day": 56,
+      "minus": 5,
+      "plus": 5
+    },
+    "severity": "major",
+    "description": "访视 V4（研究结束访视）计划于首次给药后第 56 天进行，允许窗口为 ±5 天。",
+    "section_id": "4.1",
+    "section_title": "访视计划",
+    "quote": "访视 V4（研究结束访视）计划于首次给药后第 56 天进行，允许窗口为 ±5 天。"
+  },
+  {
+    "rule_id": "TRIAL-002-SYSBP_RANGE-11",
+    "trial_id": "TRIAL-002",
+    "code": "SYSBP_RANGE",
+    "domain": "VS",
+    "field": "VSORRES",
+    "check_type": "range",
+    "params": {
+      "filter": {
+        "VSTESTCD": "SYSBP"
+      },
+      "min": 90,
+      "max": 160
+    },
+    "severity": "major",
+    "description": "收缩压（SYSBP）应在 90 至 160 mmHg 之间。",
+    "section_id": "5.1",
+    "section_title": "生命体征",
+    "quote": "收缩压（SYSBP）应在 90 至 160 mmHg 之间。"
+  },
+  {
+    "rule_id": "TRIAL-002-DIABP_RANGE-12",
+    "trial_id": "TRIAL-002",
+    "code": "DIABP_RANGE",
+    "domain": "VS",
+    "field": "VSORRES",
+    "check_type": "range",
+    "params": {
+      "filter": {
+        "VSTESTCD": "DIABP"
+      },
+      "min": 50,
+      "max": 100
+    },
+    "severity": "major",
+    "description": "舒张压（DIABP）应在 50 至 100 mmHg 之间。",
+    "section_id": "5.1",
+    "section_title": "生命体征",
+    "quote": "舒张压（DIABP）应在 50 至 100 mmHg 之间。"
+  },
+  {
+    "rule_id": "TRIAL-002-VSORRES_REQUIRED-13",
+    "trial_id": "TRIAL-002",
+    "code": "VSORRES_REQUIRED",
+    "domain": "VS",
+    "field": "VSORRES",
+    "check_type": "required",
+    "params": {},
+    "severity": "major",
+    "description": "生命体征结果（VSORRES）为必填字段。",
+    "section_id": "5.1",
+    "section_title": "生命体征",
+    "quote": "生命体征结果（VSORRES）为必填字段。"
+  },
+  {
+    "rule_id": "TRIAL-002-AESEV_REQUIRED-14",
+    "trial_id": "TRIAL-002",
+    "code": "AESEV_REQUIRED",
+    "domain": "AE",
+    "field": "AESEV",
+    "check_type": "required",
+    "params": {},
+    "severity": "major",
+    "description": "所有不良事件必须记录严重程度（AESEV），该字段不得为空。",
+    "section_id": "6.1",
+    "section_title": "不良事件",
+    "quote": "所有不良事件必须记录严重程度（AESEV），该字段不得为空。"
+  },
+  {
+    "rule_id": "TRIAL-002-AETERM_REQUIRED-15",
+    "trial_id": "TRIAL-002",
+    "code": "AETERM_REQUIRED",
+    "domain": "AE",
+    "field": "AETERM",
+    "check_type": "required",
+    "params": {},
+    "severity": "major",
+    "description": "不良事件名称（AETERM）为必填字段。",
+    "section_id": "6.1",
+    "section_title": "不良事件",
+    "quote": "不良事件名称（AETERM）为必填字段。"
+  },
+  {
+    "rule_id": "TRIAL-002-AESTDTC_REQUIRED-16",
+    "trial_id": "TRIAL-002",
+    "code": "AESTDTC_REQUIRED",
+    "domain": "AE",
+    "field": "AESTDTC",
+    "check_type": "required",
+    "params": {},
+    "severity": "major",
+    "description": "不良事件开始日期（AESTDTC）为必填字段。",
+    "section_id": "6.1",
+    "section_title": "不良事件",
+    "quote": "不良事件开始日期（AESTDTC）为必填字段。"
+  },
+  {
+    "rule_id": "TRIAL-002-AESTDTC_AFTER_DOSE-17",
+    "trial_id": "TRIAL-002",
+    "code": "AESTDTC_AFTER_DOSE",
+    "domain": "AE",
+    "field": "AESTDTC",
+    "check_type": "date_order",
+    "params": {
+      "left_field": "AESTDTC",
+      "op": ">=",
+      "right": {
+        "source": "dm",
+        "field": "RFSTDTC"
+      }
+    },
+    "severity": "major",
+    "description": "不良事件开始日期（AESTDTC）不得早于首次给药日期（RFSTDTC）。",
+    "section_id": "6.1",
+    "section_title": "不良事件",
+    "quote": "不良事件开始日期（AESTDTC）不得早于首次给药日期（RFSTDTC）。"
+  },
+  {
+    "rule_id": "TRIAL-002-AEENDTC_ORDER-18",
+    "trial_id": "TRIAL-002",
+    "code": "AEENDTC_ORDER",
+    "domain": "AE",
+    "field": "AEENDTC",
+    "check_type": "date_order",
+    "params": {
+      "left_field": "AEENDTC",
+      "op": ">=",
+      "right": {
+        "source": "same",
+        "field": "AESTDTC"
+      }
+    },
+    "severity": "major",
+    "description": "不良事件结束日期（AEENDTC）不得早于开始日期（AESTDTC）。",
+    "section_id": "6.1",
+    "section_title": "不良事件",
+    "quote": "不良事件结束日期（AEENDTC）不得早于开始日期（AESTDTC）。"
+  },
+  {
+    "rule_id": "TRIAL-002-AE_WITHDRAW_SAE-19",
+    "trial_id": "TRIAL-002",
+    "code": "AE_WITHDRAW_SAE",
+    "domain": "AE",
+    "field": "AESER",
+    "check_type": "consistency",
+    "params": {
+      "if_field": "AEACN",
+      "if_value": "DRUG WITHDRAWN",
+      "then_field": "AESER",
+      "then_value": "Y"
+    },
+    "severity": "critical",
+    "description": "若不良事件导致研究药物永久停用（AEACN 为 DRUG WITHDRAWN），则必须标记为严重不良事件（AESER 为 Y）。",
+    "section_id": "6.1",
+    "section_title": "不良事件",
+    "quote": "若不良事件导致研究药物永久停用（AEACN 为 DRUG WITHDRAWN），则必须标记为严重不良事件（AESER 为 Y）。"
+  },
+  {
+    "rule_id": "TRIAL-002-AE_SAE_SEVERITY-20",
+    "trial_id": "TRIAL-002",
+    "code": "AE_SAE_SEVERITY",
+    "domain": "AE",
+    "field": "AESEV",
+    "check_type": "consistency",
+    "params": {
+      "if_field": "AESER",
+      "if_value": "Y",
+      "then_field": "AESEV",
+      "then_in": [
+        "SEVERE",
+        "LIFE-THREATENING"
+      ]
+    },
+    "severity": "critical",
+    "description": "若不良事件被标记为严重不良事件（AESER 为 Y），则严重程度（AESEV）必须为 SEVERE 或 LIFE-THREATENING。",
+    "section_id": "6.1",
+    "section_title": "不良事件",
+    "quote": "若不良事件被标记为严重不良事件（AESER 为 Y），则严重程度（AESEV）必须为 SEVERE 或 LIFE-THREATENING。"
+  },
+  {
+    "rule_id": "TRIAL-002-AE_FATAL_SAE-21",
+    "trial_id": "TRIAL-002",
+    "code": "AE_FATAL_SAE",
+    "domain": "AE",
+    "field": "AESER",
+    "check_type": "consistency",
+    "params": {
+      "if_field": "AEOUT",
+      "if_value": "FATAL",
+      "then_field": "AESER",
+      "then_value": "Y"
+    },
+    "severity": "critical",
+    "description": "若不良事件转归为死亡（AEOUT 为 FATAL），则必须标记为严重不良事件（AESER 为 Y）。",
+    "section_id": "6.1",
+    "section_title": "不良事件",
+    "quote": "若不良事件转归为死亡（AEOUT 为 FATAL），则必须标记为严重不良事件（AESER 为 Y）。"
+  },
+  {
+    "rule_id": "TRIAL-002-ALT_RANGE-22",
+    "trial_id": "TRIAL-002",
+    "code": "ALT_RANGE",
+    "domain": "LB",
+    "field": "LBORRES",
+    "check_type": "range",
+    "params": {
+      "filter": {
+        "LBTESTCD": "ALT"
+      },
+      "max": 150.0
+    },
+    "severity": "major",
+    "description": "丙氨酸氨基转移酶（ALT）检测值不得超过 150 U/L。",
+    "section_id": "6.2",
+    "section_title": "实验室检查",
+    "quote": "丙氨酸氨基转移酶（ALT）检测值不得超过 150 U/L。"
+  },
+  {
+    "rule_id": "TRIAL-002-HGB_RANGE-23",
+    "trial_id": "TRIAL-002",
+    "code": "HGB_RANGE",
+    "domain": "LB",
+    "field": "LBORRES",
+    "check_type": "range",
+    "params": {
+      "filter": {
+        "LBTESTCD": "HGB"
+      },
+      "min": 110.0
+    },
+    "severity": "major",
+    "description": "血红蛋白（HGB）检测值不得低于 110 g/L。",
+    "section_id": "6.2",
+    "section_title": "实验室检查",
+    "quote": "血红蛋白（HGB）检测值不得低于 110 g/L。"
+  },
+  {
+    "rule_id": "TRIAL-002-CREA_RANGE-24",
+    "trial_id": "TRIAL-002",
+    "code": "CREA_RANGE",
+    "domain": "LB",
+    "field": "LBORRES",
+    "check_type": "range",
+    "params": {
+      "filter": {
+        "LBTESTCD": "CREA"
+      },
+      "max": 150.0
+    },
+    "severity": "major",
+    "description": "肌酐（CREA）检测值不得超过 150 μmol/L。",
+    "section_id": "6.2",
+    "section_title": "实验室检查",
+    "quote": "肌酐（CREA）检测值不得超过 150 μmol/L。"
+  },
+  {
+    "rule_id": "TRIAL-002-LBORRES_REQUIRED-25",
+    "trial_id": "TRIAL-002",
+    "code": "LBORRES_REQUIRED",
+    "domain": "LB",
+    "field": "LBORRES",
+    "check_type": "required",
+    "params": {},
+    "severity": "major",
+    "description": "实验室检查结果（LBORRES）为必填字段。",
+    "section_id": "6.2",
+    "section_title": "实验室检查",
+    "quote": "实验室检查结果（LBORRES）为必填字段。"
+  },
+  {
+    "rule_id": "TRIAL-002-CM_PROHIBITED-26",
+    "trial_id": "TRIAL-002",
+    "code": "CM_PROHIBITED",
+    "domain": "CM",
+    "field": "CMTRT",
+    "check_type": "conmed_prohibited",
+    "params": {
+      "values": [
+        "华法林",
+        "利伐沙班"
+      ]
+    },
+    "severity": "critical",
+    "description": "研究期间禁止合并使用以下药物：华法林、利伐沙班。",
+    "section_id": "6.3",
+    "section_title": "合并用药",
+    "quote": "研究期间禁止合并使用以下药物：华法林、利伐沙班。"
+  },
+  {
+    "rule_id": "TRIAL-002-CMTRT_REQUIRED-27",
+    "trial_id": "TRIAL-002",
+    "code": "CMTRT_REQUIRED",
+    "domain": "CM",
+    "field": "CMTRT",
+    "check_type": "required",
+    "params": {},
+    "severity": "major",
+    "description": "合并用药名称（CMTRT）为必填字段。",
+    "section_id": "6.3",
+    "section_title": "合并用药",
+    "quote": "合并用药名称（CMTRT）为必填字段。"
+  },
+  {
+    "rule_id": "TRIAL-002-CMSTDTC_REQUIRED-28",
+    "trial_id": "TRIAL-002",
+    "code": "CMSTDTC_REQUIRED",
+    "domain": "CM",
+    "field": "CMSTDTC",
+    "check_type": "required",
+    "params": {},
+    "severity": "major",
+    "description": "合并用药开始日期（CMSTDTC）为必填字段。",
+    "section_id": "6.3",
+    "section_title": "合并用药",
+    "quote": "合并用药开始日期（CMSTDTC）为必填字段。"
+  },
+  {
+    "rule_id": "TRIAL-002-SVSTDTC_REQUIRED-29",
+    "trial_id": "TRIAL-002",
+    "code": "SVSTDTC_REQUIRED",
+    "domain": "SV",
+    "field": "SVSTDTC",
+    "check_type": "required",
+    "params": {},
+    "severity": "major",
+    "description": "访视日期（SVSTDTC）为必填字段。",
+    "section_id": "7.1",
+    "section_title": "数据管理",
+    "quote": "访视日期（SVSTDTC）为必填字段。"
+  },
+  {
+    "rule_id": "TRIAL-002-VISIT_REQUIRED-30",
+    "trial_id": "TRIAL-002",
+    "code": "VISIT_REQUIRED",
+    "domain": "SV",
+    "field": "VISIT",
+    "check_type": "required",
+    "params": {},
+    "severity": "major",
+    "description": "访视名称（VISIT）为必填字段。",
+    "section_id": "7.1",
+    "section_title": "数据管理",
+    "quote": "访视名称（VISIT）为必填字段。"
+  },
+  {
+    "rule_id": "TRIAL-002-EXTRT_REQUIRED-31",
+    "trial_id": "TRIAL-002",
+    "code": "EXTRT_REQUIRED",
+    "domain": "EX",
+    "field": "EXTRT",
+    "check_type": "required",
+    "params": {},
+    "severity": "major",
+    "description": "研究药物名称（EXTRT）为必填字段。",
+    "section_id": "7.2",
+    "section_title": "给药记录",
+    "quote": "研究药物名称（EXTRT）为必填字段。"
+  },
+  {
+    "rule_id": "TRIAL-002-EXSTDTC_REQUIRED-32",
+    "trial_id": "TRIAL-002",
+    "code": "EXSTDTC_REQUIRED",
+    "domain": "EX",
+    "field": "EXSTDTC",
+    "check_type": "required",
+    "params": {},
+    "severity": "major",
+    "description": "研究药物首次给药日期（EXSTDTC）为必填字段。",
+    "section_id": "7.2",
+    "section_title": "给药记录",
+    "quote": "研究药物首次给药日期（EXSTDTC）为必填字段。"
+  },
+  {
+    "rule_id": "TRIAL-002-EXENDTC_ORDER-33",
+    "trial_id": "TRIAL-002",
+    "code": "EXENDTC_ORDER",
+    "domain": "EX",
+    "field": "EXENDTC",
+    "check_type": "date_order",
+    "params": {
+      "left_field": "EXENDTC",
+      "op": ">=",
+      "right": {
+        "source": "same",
+        "field": "EXSTDTC"
+      }
+    },
+    "severity": "major",
+    "description": "研究药物给药结束日期（EXENDTC）不得早于开始日期（EXSTDTC）。",
+    "section_id": "7.2",
+    "section_title": "给药记录",
+    "quote": "研究药物给药结束日期（EXENDTC）不得早于开始日期（EXSTDTC）。"
+  }
+]

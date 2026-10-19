@@ -1,0 +1,455 @@
+{
+  "generated_at": "2026-10-19T20:52:06",
+  "note": "P0 uses generator-provided gold rules to validate the rule engine; LLM rule extraction is evaluated separately in P1.",
+  "overall": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "tp": 68,
+    "fp": 0,
+    "fn": 0,
+    "predicted": 68,
+    "truth": 68,
+    "clean_false_positives": 0
+  },
+  "trials": {
+    "TRIAL-001": {
+      "rules": 33,
+      "subjects": 25,
+      "clean_anomalies": 0,
+      "metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 34,
+        "fp": 0,
+        "fn": 0,
+        "predicted": 34,
+        "truth": 34,
+        "per_type": {
+          "AEENDTC_ORDER": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "AESEV_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "AESTDTC_AFTER_DOSE": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "AESTDTC_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "AETERM_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "AE_FATAL_SAE": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "AE_SAE_SEVERITY": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "AE_WITHDRAW_SAE": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "AGE_RANGE": {
+            "total": 2,
+            "matched": 2,
+            "recall": 1.0
+          },
+          "AGE_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "ALT_RANGE": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "BMI_RANGE": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "BMI_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "CMSTDTC_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "CMTRT_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "CM_PROHIBITED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "CREA_RANGE": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "DIABP_RANGE": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "EXENDTC_ORDER": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "EXSTDTC_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "EXTRT_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "HGB_RANGE": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "LBORRES_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "RFSTDTC_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "SEX_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "SVSTDTC_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "SYSBP_RANGE": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "VISIT_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "VISIT_V1_WINDOW": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "VISIT_V2_WINDOW": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "VISIT_V3_WINDOW": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "VISIT_V4_WINDOW": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "VSORRES_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          }
+        },
+        "false_positives": [],
+        "false_negatives": []
+      },
+      "timings": {
+        "TRIAL-001-AGE_RANGE-01": 0.006511999999929685,
+        "TRIAL-001-BMI_RANGE-02": 0.0054168999995454215,
+        "TRIAL-001-AGE_REQUIRED-03": 0.0049254999994445825,
+        "TRIAL-001-BMI_REQUIRED-04": 0.006898000001456239,
+        "TRIAL-001-SEX_REQUIRED-05": 0.004833999999391381,
+        "TRIAL-001-RFSTDTC_REQUIRED-06": 0.0054001000007701805,
+        "TRIAL-001-VISIT_V1_WINDOW-07": 0.012383500001305947,
+        "TRIAL-001-VISIT_V2_WINDOW-08": 0.011114499999166583,
+        "TRIAL-001-VISIT_V3_WINDOW-09": 0.010600699999486096,
+        "TRIAL-001-VISIT_V4_WINDOW-10": 0.012006399998426787,
+        "TRIAL-001-SYSBP_RANGE-11": 0.010935700000118231,
+        "TRIAL-001-DIABP_RANGE-12": 0.010780799999338342,
+        "TRIAL-001-VSORRES_REQUIRED-13": 0.010891399999309215,
+        "TRIAL-001-AESEV_REQUIRED-14": 0.005962899998849025,
+        "TRIAL-001-AETERM_REQUIRED-15": 0.005881499999304651,
+        "TRIAL-001-AESTDTC_REQUIRED-16": 0.005863800000952324,
+        "TRIAL-001-AESTDTC_AFTER_DOSE-17": 0.009271000000808272,
+        "TRIAL-001-AEENDTC_ORDER-18": 0.006597200001124293,
+        "TRIAL-001-AE_WITHDRAW_SAE-19": 0.006320700000287616,
+        "TRIAL-001-AE_SAE_SEVERITY-20": 0.006525599999804399,
+        "TRIAL-001-AE_FATAL_SAE-21": 0.005727300000216928,
+        "TRIAL-001-ALT_RANGE-22": 0.01544119999925897,
+        "TRIAL-001-HGB_RANGE-23": 0.014568399999916437,
+        "TRIAL-001-CREA_RANGE-24": 0.014811399998507113,
+        "TRIAL-001-LBORRES_REQUIRED-25": 0.01416859999881126,
+        "TRIAL-001-CM_PROHIBITED-26": 0.006398600000466104,
+        "TRIAL-001-CMTRT_REQUIRED-27": 0.00773999999910302,
+        "TRIAL-001-CMSTDTC_REQUIRED-28": 0.006637000000409898,
+        "TRIAL-001-SVSTDTC_REQUIRED-29": 0.00795749999997497,
+        "TRIAL-001-VISIT_REQUIRED-30": 0.007383400001344853,
+        "TRIAL-001-EXTRT_REQUIRED-31": 0.004431500001373934,
+        "TRIAL-001-EXSTDTC_REQUIRED-32": 0.004530599999270635,
+        "TRIAL-001-EXENDTC_ORDER-33": 0.004980699999578064
+      }
+    },
+    "TRIAL-002": {
+      "rules": 33,
+      "subjects": 25,
+      "clean_anomalies": 0,
+      "metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 34,
+        "fp": 0,
+        "fn": 0,
+        "predicted": 34,
+        "truth": 34,
+        "per_type": {
+          "AEENDTC_ORDER": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "AESEV_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "AESTDTC_AFTER_DOSE": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "AESTDTC_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "AETERM_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "AE_FATAL_SAE": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "AE_SAE_SEVERITY": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "AE_WITHDRAW_SAE": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "AGE_RANGE": {
+            "total": 2,
+            "matched": 2,
+            "recall": 1.0
+          },
+          "AGE_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "ALT_RANGE": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "BMI_RANGE": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "BMI_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "CMSTDTC_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "CMTRT_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "CM_PROHIBITED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "CREA_RANGE": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "DIABP_RANGE": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "EXENDTC_ORDER": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "EXSTDTC_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "EXTRT_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "HGB_RANGE": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "LBORRES_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "RFSTDTC_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "SEX_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "SVSTDTC_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "SYSBP_RANGE": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "VISIT_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "VISIT_V1_WINDOW": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "VISIT_V2_WINDOW": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "VISIT_V3_WINDOW": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "VISIT_V4_WINDOW": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          },
+          "VSORRES_REQUIRED": {
+            "total": 1,
+            "matched": 1,
+            "recall": 1.0
+          }
+        },
+        "false_positives": [],
+        "false_negatives": []
+      },
+      "timings": {
+        "TRIAL-002-AGE_RANGE-01": 0.003927199999452569,
+        "TRIAL-002-BMI_RANGE-02": 0.004433799998878385,
+        "TRIAL-002-AGE_REQUIRED-03": 0.004468800001632189,
+        "TRIAL-002-BMI_REQUIRED-04": 0.005085200000394252,
+        "TRIAL-002-SEX_REQUIRED-05": 0.003993100001025596,
+        "TRIAL-002-RFSTDTC_REQUIRED-06": 0.004352899999503279,
+        "TRIAL-002-VISIT_V1_WINDOW-07": 0.009214899999278714,
+        "TRIAL-002-VISIT_V2_WINDOW-08": 0.009289300000091316,
+        "TRIAL-002-VISIT_V3_WINDOW-09": 0.0085190000008879,
+        "TRIAL-002-VISIT_V4_WINDOW-10": 0.009452199999941513,
+        "TRIAL-002-SYSBP_RANGE-11": 0.010823100001289276,
+        "TRIAL-002-DIABP_RANGE-12": 0.010335400000258232,
+        "TRIAL-002-VSORRES_REQUIRED-13": 0.009949299999789218,
+        "TRIAL-002-AESEV_REQUIRED-14": 0.0043602999994618585,
+        "TRIAL-002-AETERM_REQUIRED-15": 0.004318100000091363,
+        "TRIAL-002-AESTDTC_REQUIRED-16": 0.004104100000404287,
+        "TRIAL-002-AESTDTC_AFTER_DOSE-17": 0.007311999999728869,
+        "TRIAL-002-AEENDTC_ORDER-18": 0.006238600000870065,
+        "TRIAL-002-AE_WITHDRAW_SAE-19": 0.005050600000686245,
+        "TRIAL-002-AE_SAE_SEVERITY-20": 0.004365500000858447,
+        "TRIAL-002-AE_FATAL_SAE-21": 0.004537500000878936,
+        "TRIAL-002-ALT_RANGE-22": 0.01341580000007525,
+        "TRIAL-002-HGB_RANGE-23": 0.013655199998538592,
+        "TRIAL-002-CREA_RANGE-24": 0.013275400000566151,
+        "TRIAL-002-LBORRES_REQUIRED-25": 0.013474699999278528,
+        "TRIAL-002-CM_PROHIBITED-26": 0.004420799999934388,
+        "TRIAL-002-CMTRT_REQUIRED-27": 0.005747600000177044,
+        "TRIAL-002-CMSTDTC_REQUIRED-28": 0.005895300000702264,
+        "TRIAL-002-SVSTDTC_REQUIRED-29": 0.0073737000002438435,
+        "TRIAL-002-VISIT_REQUIRED-30": 0.00774710000041523,
+        "TRIAL-002-EXTRT_REQUIRED-31": 0.005457600000227103,
+        "TRIAL-002-EXSTDTC_REQUIRED-32": 0.006021099999998114,
+        "TRIAL-002-EXENDTC_ORDER-33": 0.003960899999583489
+      }
+    }
+  }
+}

@@ -1,0 +1,6 @@
+llm:
+  provider: ollama
+  base_url: http://localhost:11434
+  model: qwen2.5:7b-instruct-q4_K_M
+  temperature: 0.0
+  timeout_s: 180
